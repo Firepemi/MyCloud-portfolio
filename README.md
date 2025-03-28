@@ -358,3 +358,68 @@ CloudTrail logs are securely stored in Amazon S3 and can be further analyzed usi
 Figure: A line graph chart showing the maximum number of employees and average fee paid
 ![busi](https://github.com/user-attachments/assets/9136c6ef-ae6e-4680-bf02-a9a52e5b98b3)
 
+### 🔄 End-to-End Data Flow and Architecture Overview
+
+The Data Analytics Platform is built on a **modular pipeline architecture**, enabling seamless data flow from ingestion to analytical output. The platform ensures scalability, automation, and consistent data quality throughout the entire lifecycle by leveraging a suite of AWS services. Below is a breakdown of the key stages in the pipeline:
+
+### 📥 1. Data Ingestion from Multiple Sources  
+The system is designed to handle diverse data inputs, including:
+
+- CSV files exported from internal systems or open data portals  
+- Relational databases (e.g., MySQL, PostgreSQL) via data connectors *(optional future integration)*  
+- Cloud APIs or third-party services such as HR and finance platforms  
+
+This multi-source capability allows the platform to accommodate structured and semi-structured data from various City of Vancouver departments.
+
+All incoming data is stored in **Amazon S3** within a structured bucket (`cov-raw-firepemi`). Ensuring traceability, efficient partitioning, and optimized access.
+
+### 🧹 2. Data Cleaning and Transformation  
+Ingested data flows through **AWS Glue DataBrew**, a visual, no-code tool used for:
+
+- Profiling data to assess types, distributions, and missing values  
+- Detecting and correcting quality issues such as nulls, inconsistencies, and duplicates  
+- Applying reusable transformation recipes tailored to governance and analytics requirements  
+
+This step ensures only clean, validated, standardized data continues through the pipeline.
+
+### 📦 3. Layered Data Storage Architecture  
+After transformation, the data is written back to **Amazon S3** following a layered storage model:
+
+- **Transformed Layer**: Stored in `cov-trf-firepemi` for use in summarization and further processing  
+- **Curated Layer**: Final datasets are stored in `cov-cur-firepemi` in both **CSV** (for readability and reporting) and **Parquet** (for optimized querying with Athena or Redshift)
+
+Each storage layer adheres to a consistent directory structure supporting **partitioning**, **versioning**, and **backup**, ensuring performance, traceability, and data integrity.
+
+### 📚 4. Metadata Management with AWS Glue Data Catalog  
+To enhance data discovery and governance, all processed datasets are cataloged in the **AWS Glue Data Catalog**, capturing metadata such as:
+
+- Column names, data types, and table structure  
+- Data source, update frequency, and schema versioning  
+
+A configured **Glue Crawler** scans updated S3 paths and automatically refreshes the catalog as new data becomes available. This metadata is accessible to AWS analytics tools like **Athena** (for SQL queries) and **Amazon QuickSight** (for interactive dashboards), promoting secure, scalable, and self-service analytics across teams.
+
+📈 Descriptive Analysis Focus
+
+-What is the average fee paid for the business license issued?
+-what is the minimum average fee paid?
+-What is the average number of employees for various businesses?
+
+🚀 Future Enhancements
+
+Integrate with AWS Athena or QuickSight for real-time querying & dashboards
+Incorporate API data sources
+Schedule automated jobs using AWS Lambda
+
+🧑‍💼 Author
+
+Olamide Olajumoke Agbenla (Firepemi)
+MBA Candidate | Cloud Practitioner Enthusiast | Cloud Analytics Developer
+
+📬 Contact
+📧 Email: [mideagbenla@gmail.com]
+🔗 LinkedIn: [https://ng.linkedin.com/in/olamide-agbenla-883051197]
+💼 Portfolio: []
+
+📌 License
+This project is for academic demonstration purposes. No commercial use is allowed.
+
